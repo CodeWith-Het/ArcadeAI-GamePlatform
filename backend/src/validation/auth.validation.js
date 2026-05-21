@@ -14,18 +14,21 @@ export const validate = (req, res, next) => {
 export const registerValidation = [
   body("username")
     .notEmpty()
+    .withMessage("Username is required!")
     .isString()
-    .withMessage("username should be string"),
-  
+    .withMessage("Username should be string!"),
+
   body("email")
     .notEmpty()
+    .withMessage("Email is required!")
     .isEmail()
-    .withMessage("email should be vaild email address"),
+    .withMessage("Email should be valid!"),
 
   body("password")
     .notEmpty()
-    .isLength()
-    .withMessage("password should be vaild for varification")
-  ,
-    validate,
+    .withMessage("Password is required!")
+    .isLength({ min: 6 })
+    .withMessage("Password min 6 characters!"),
+
+  validate, 
 ];

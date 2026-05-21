@@ -32,12 +32,19 @@ const userSchemaModel = new mongoose.Schema(
       default: "",
     },
 
+    // if user admin is not 
     isAdmin: {
       type: Boolean,
       default: false,
     },
 
     isBanned: {
+      type: Boolean,
+      default: false,
+    },
+
+    // Email Verification
+    isVerified: {
       type: Boolean,
       default: false,
     },
@@ -70,10 +77,9 @@ const userSchemaModel = new mongoose.Schema(
 );
 
 // Password hash karo save se pehle
-userSchemaModel.pre("save", async function (next) {
+userSchemaModel.pre("save", async function () {
   if (!this.isModified("password")) return next();
   this.password = await bcrypt.hash(this.password, 12);
-  next();
 });
 
 // Password compare karo login ke waqt

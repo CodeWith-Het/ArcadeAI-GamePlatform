@@ -1,12 +1,10 @@
 import app from "./src/app.js";
-import connectDB from "./src/config/database.js";
+import connectToDB from "./src/config/database.js";
 
-connectDB()
+connectToDB()
 
-const PORT = 3000;
-
-app.listen(PORT, () => {
+app.listen(3000, () => {
   console.log(`\n=========================================`);
-  console.log(`🎮 ArcadeAI Server is LIVE on Port: ${PORT}`);
+  console.log(`🎮 ArcadeAI Server is LIVE on Port: 3000`);
   console.log(`=========================================\n`);
 });
