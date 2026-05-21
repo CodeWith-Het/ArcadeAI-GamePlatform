@@ -1,34 +1,12 @@
-import 'dotenv/config'; // ES module way to load dotenv
-import http from 'http';
-import { Server } from 'socket.io';
-import app from './src/app.js';       // .js extension is required in ES modules
+import app from "./src/app.js";
+import connectDB from "./src/config/database.js";
 
-// 2. Create HTTP Server using Express App
-const server = http.createServer(app);
+connectDB()
 
-// 3. Initialize Socket.io (For Real-time Leaderboard & Notifications)
-const io = new Server(server, {
-    cors: {
-        origin: '*',
-        methods: ['GET', 'POST', 'PUT', 'DELETE']
-    }
-});
+const PORT = 3000;
 
-// Socket Connection Logic
-io.on('connection', (socket) => {
-    console.log(`🔌 New Player Connected (Socket ID: ${socket.id})`);
-
-    socket.on('disconnect', () => {
-        console.log(`❌ Player Disconnected (Socket ID: ${socket.id})`);
-    });
-});
-
-// Make 'io' accessible in our controllers
-app.set('io', io);
-
-// 4. Start the Engine
-server.listen(3000, () => {
-    console.log(`\n=========================================`);
-    console.log(`🎮 ArcadeAI Server is LIVE on Port: 3000`);
-    console.log(`=========================================\n`);
+app.listen(PORT, () => {
+  console.log(`\n=========================================`);
+  console.log(`🎮 ArcadeAI Server is LIVE on Port: ${PORT}`);
+  console.log(`=========================================\n`);
 });
