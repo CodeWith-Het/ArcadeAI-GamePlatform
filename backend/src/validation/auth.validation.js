@@ -32,3 +32,23 @@ export const registerValidation = [
 
   validate, 
 ];
+
+export const loginValidation = [
+  body("username")
+    .notEmpty()
+    .withMessage("Username is required!")
+    .isString()
+    .withMessage("Username should be string!"),
+
+  body("email")
+    .notEmpty()
+    .withMessage("Email is required!")
+    .isEmail()
+    .withMessage("Email should be valid!"),
+
+  body("password")
+    .notEmpty()
+    .withMessage("Password is required!")
+    .isLength({ min: 6 })
+    .withMessage("Password min 6 characters!"),
+];

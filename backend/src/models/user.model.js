@@ -38,11 +38,6 @@ const userSchemaModel = new mongoose.Schema(
       default: false,
     },
 
-    isBanned: {
-      type: Boolean,
-      default: false,
-    },
-
     // Email Verification
     isVerified: {
       type: Boolean,
@@ -78,7 +73,7 @@ const userSchemaModel = new mongoose.Schema(
 
 // Password hash karo save se pehle
 userSchemaModel.pre("save", async function () {
-  if (!this.isModified("password")) return next();
+  if (!this.isModified("password")) return 
   this.password = await bcrypt.hash(this.password, 12);
 });
 
