@@ -38,8 +38,7 @@ export const userRegister = async (req, res, next) => {
       await sendEmail({
         to: user.email,
         subject: "Verify your ArcadeAI account 🎮",
-        html: `
-          <div style="font-family: Arial, sans-serif; background: #0a0a0f; color: #ffffff; padding: 32px; border-radius: 8px;">
+        html: `<div style="font-family: Arial, sans-serif; background: #0a0a0f; color: #ffffff; padding: 32px; border-radius: 8px;">
   
   <h1 style="color: #00b4d8; text-align: center;">
     🎮 ARCADEAI
@@ -94,8 +93,7 @@ export const userRegister = async (req, res, next) => {
     © 2026 ArcadeAI. Built with MERN & TensorFlow.js
   </p>
 
-</div>
-        `,
+</div>`
       });
     } catch (err) {
       console.error("Background Welcome Mail Failed:", err.message);
@@ -120,9 +118,11 @@ export const verifyEmail =async (req,res,next) => {
     const emailVerificationToken = req.query.token
 
   if (!emailVerificationToken) {
-    return res.status(400).send(`<h2 style="color: red; text-align: center; margin-top: 50px;">
-          ❌ Verification token missing hai! Kripya email mein aaye poore link par click karein.
-        </h2>`)
+    return res.status(400).json({
+      success: false,
+      message:
+        "Verification token missing! Please use the full link provided in your email.",
+    });
   }
 
   let decode=null
@@ -131,6 +131,12 @@ export const verifyEmail =async (req,res,next) => {
   }
   catch (error) {
    console.error("Decode unsuccessfully:", error.message);
+
+   return res.status(400).json({
+     success: false,
+     message:
+       "Invalid or expired token! Please request a new verification link.",
+   });
   }
   
     const user =await userModel.findOne({
@@ -138,19 +144,19 @@ export const verifyEmail =async (req,res,next) => {
     })
 
   if (!user) {
-    return res.status(400).send(`<h2 style="color: red; text-align: center; margin-top: 50px;">
-          ❌ Invalid or Expired Token! Kripya naya link request karein.
-        </h2>`)
+    return res.status(400).json({
+      success: false,
+      message: "User not found! Please verify with the correct account.",
+    });
   }
   
   // user verified is is true response
   if (user.isVerified) {
-       return res.status(200).send(`
-         <h2 style="color: green; text-align: center; margin-top: 50px;">
-           ✅ Email is already verified! Aap login kar sakte hain.
-         </h2>
-       `);
-    }
+    return res.status(200).json({
+      success: true,
+      message: "Email is already verified! You can proceed to login.",
+    });
+  }
 
   user.isVerified = true
   
@@ -234,7 +240,7 @@ export const userLogin =async (req,res,next) => {
   
   res.status(200).json({
     success:true,
-    message: "User seccussfully Fetch",
+    message: "User seccussfully Login",
     user: {
       id: user._id,
       username: user.username,
@@ -250,29 +256,10 @@ export const userLogin =async (req,res,next) => {
 }
 
 export const getUser = async (req, res, next) => {
-  try {
-    const token = req.cookies.token;
-
-    if (!token) {
-      return res.status(401).json({
-        success: false,
-        message: "Login required! Please login to view profile.",
-        error: "Token missing",
-      });
-    }
-
-    let decode = null 
-
-    try {
-      decode = jwt.verify(token,process.env.JWT_SECRET)
-    }
-    catch (error) {
-          console.error("decodeing error is here", error.message)
-      throw error
-    }
-
-    const user = await userModel.findOne({
-      id:decode._id
+  try { 
+ 
+  const user = await userModel.findOne({
+      id:req.user._id
     })
 
     if (!user) {
