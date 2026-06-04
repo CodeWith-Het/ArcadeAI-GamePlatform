@@ -1,6 +1,7 @@
 import userModel from "../models/user.model.js";
 import jwt from "jsonwebtoken";
 import { sendEmail } from "../service/mail.service.js";
+import redis from "../config/redis.js";
 
 export const userRegister = async (req, res, next) => {
   try {
@@ -228,13 +229,12 @@ export const userLogin =async (req,res,next) => {
   }
 
   const token = jwt.sign({
-    id:user._id
+    _id:user._id
   }, process.env.JWT_SECRET, { expiresIn: "7d" })
   
   res.cookie("token", token, {
     httpOnly: true,
     secure: process.env.NODE_ENVIRONMENT == "development",
-    sameSite: "strict",
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
   
@@ -258,9 +258,7 @@ export const userLogin =async (req,res,next) => {
 export const getUser = async (req, res, next) => {
   try { 
  
-  const user = await userModel.findOne({
-      id:req.user._id
-    })
+    const user = await userModel.findById(req.user._id);
 
     if (!user) {
       return res.status(401).json({
@@ -285,10 +283,22 @@ export const getUser = async (req, res, next) => {
 }
 
 export const userLogout = async (req, res, next) => {
-   try {
+  try {
+     
+    const token = req.cookies.token
+    
+    if (token) {
+      await redis.set(
+        `blacklist:${token}`,
+        "true",
+        "EX",
+        3 * 24 * 60 * 60, // 3 days in seconds
+      );
+    }
+
      res.clearCookie("token", {
        httpOnly: true,
-       secure: process.env.NODE_ENV === "production",
+       secure: process.env.NODE_ENVIRONMENT === "development",
        sameSite: "strict",
      });
 
