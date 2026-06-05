@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createGame } from "../controller/game.controller.js";
+import {  createGame, deleteGame, getAllGame, getSlug } from "../controller/game.controller.js";
 import { upload } from "../middleware/upload.middleware.js";
 
 
@@ -13,5 +13,9 @@ gameRouter.post(
   ]),
   createGame,
 );
+
+gameRouter.get("/getallgame", getAllGame)
+gameRouter.get("/:slug", getSlug)
+gameRouter.get("/deletegame/:id",deleteGame)
 
 export default gameRouter
