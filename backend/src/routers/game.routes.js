@@ -14,7 +14,7 @@ gameRouter.post(
   createGame,
 );
 
-gameRouter.get("/getallgame", getAllGame)
+gameRouter.get("/allgame", getAllGame)
 gameRouter.get("/:slug", getSlug)
 gameRouter.get("/deletegame/:id",deleteGame)
 

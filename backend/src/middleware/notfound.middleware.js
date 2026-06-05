@@ -1,9 +1,12 @@
 const notFound = (req, res, next) => {
-    const error = new Error(`Route Not Found - ${req.originalUrl}`);
+  
+  if (req.originalUrl === "/favicon.ico") {
+    return res.status(204).end();
+  }
 
-    res.status(404)
+  const error = new Error(`Route Not Found - ${req.originalUrl}`);
+  res.status(404);
+  next(error);
+};
 
-    next(error)
-}
-
-export default notFound
+export default notFound;
