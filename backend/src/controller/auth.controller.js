@@ -1,6 +1,6 @@
 import userModel from "../models/user.model.js";
 import jwt from "jsonwebtoken";
-import { sendEmail } from "../service/mail.service.js";
+import { sendmail } from '../service/mail.service.js';
 import redis from "../config/redis.js";
 
 export const userRegister = async (req, res, next) => {
@@ -36,7 +36,7 @@ export const userRegister = async (req, res, next) => {
 
     // send email
     try {
-      await sendEmail({
+      await sendmail({
         to: user.email,
         subject: "Verify your ArcadeAI account 🎮",
         html: `<div style="font-family: Arial, sans-serif; background: #0a0a0f; color: #ffffff; padding: 32px; border-radius: 8px;">
@@ -118,67 +118,51 @@ export const verifyEmail =async (req,res,next) => {
   try {
     const emailVerificationToken = req.query.token
 
-  if (!emailVerificationToken) {
-    return res.status(400).json({
-      success: false,
-      message:
-        "Verification token missing! Please use the full link provided in your email.",
-    });
-  }
+    if (!emailVerificationToken) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Verification token missing! Please use the full link provided in your email.",
+      });
+    }
 
-  let decode=null
-  try {
-    decode = jwt.verify(emailVerificationToken,process.env.JWT_SECRET)
-  }
-  catch (error) {
-   console.error("Decode unsuccessfully:", error.message);
+    let decode = null
+    try {
+      decode = jwt.verify(emailVerificationToken, process.env.JWT_SECRET)
+    }
+    catch (error) {
+      console.error("Decode unsuccessfully:", error.message);
 
-   return res.status(400).json({
-     success: false,
-     message:
-       "Invalid or expired token! Please request a new verification link.",
-   });
-  }
+      return res.status(400).json({
+        success: false,
+        message:
+          "Invalid or expired token! Please request a new verification link.",
+      });
+    }
   
-    const user =await userModel.findOne({
-      email:decode.email
+    const user = await userModel.findOne({
+      email: decode.email
     })
 
-  if (!user) {
-    return res.status(400).json({
-      success: false,
-      message: "User not found! Please verify with the correct account.",
-    });
-  }
-  
-  // user verified is is true response
-  if (user.isVerified) {
-    return res.status(200).json({
-      success: true,
-      message: "Email is already verified! You can proceed to login.",
-    });
-  }
+    const frontendUrl = "http://localhost:5173"
 
-  user.isVerified = true
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "User not found! Please verify with the correct account.",
+      });
+    }
   
-  await user.save()
+    // user verified is is true response
+    if (user.isVerified) {
+      return res.redirect(`${frontendUrl}/login?message=already_verified`)
+    }
 
-    const html = `
-    <div style="text-align: center; margin-top: 50px; font-family: sans-serif; background-color: #f9fafb; padding: 40px;">
-          <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: inline-block;">
-            <h1 style="color: #10B981; font-size: 40px; margin: 0;">✅</h1>
-            <h2 style="color: #374151;">Email Verified Successfully!</h2>
-            <p style="color: #6B7280;">Welcome aboard, <strong>${user.username}</strong>! Aapka account activate ho gaya hai.</p>
-            <p style="color: #9CA3AF; font-size: 14px; margin-top: 20px;">Ab aap is tab ko close karke app mein login kar sakte hain.</p>
-            
-            <a href="http://localhost:5173/login" style="background-color: #4F46E5; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; margin-top: 20px; font-weight: bold;">
-              Go to Login
-            </a>
-          </div>
-      </div>
-    `;
+    user.isVerified = true
   
-  res.send(html)
+    await user.save()
+
+    return res.redirect(`${frontendUrl}/login?verified=true`);
   }
   catch (error) {
     next(error)
