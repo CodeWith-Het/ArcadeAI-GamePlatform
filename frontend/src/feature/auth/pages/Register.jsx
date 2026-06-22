@@ -29,7 +29,7 @@ const Register = () => {
           <h1 className="text-2xl sm:text-3xl font-black tracking-[4px] sm:tracking-[6px] text-white uppercase">
             Arcade<span className="text-[#00b4d8]">AI</span>
           </h1>
-          <p className="text-[#555] text-xs sm:text-sm mt-2 tracking-widest uppercase">
+          <p className="text-[#7b7676] text-xs sm:text-sm mt-2 tracking-widest uppercase">
             Join The Arena
           </p>
         </div>
@@ -39,7 +39,7 @@ const Register = () => {
           <h2 className="text-white text-lg sm:text-xl font-bold mb-1">
             Create Account
           </h2>
-          <p className="text-[#555] text-xs sm:text-sm mb-5 sm:mb-6">
+          <p className="text-[#7b7676] text-xl mt-3 sm:text-sm mb-5 sm:mb-6">
             Start your gaming journey
           </p>
 

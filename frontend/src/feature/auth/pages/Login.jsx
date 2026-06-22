@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth.js";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -8,13 +9,23 @@ const Login = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
 
+  const { handLogin,isAuthenicate,isLoading,isError } = useAuth();
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(formData);
+    try {
+
+      await handLogin(formData);
+  
+      <Navigate to="/" replace />
+    } catch (error) {
+      console.log("Login failed:", error);
+    }
   };
 
   return (
@@ -28,7 +39,7 @@ const Login = () => {
           <h1 className="text-2xl sm:text-3xl font-black tracking-[4px] sm:tracking-[6px] text-white uppercase">
             Arcade<span className="text-[#00b4d8]">AI</span>
           </h1>
-          <p className="text-[#555] text-xs sm:text-sm mt-2 tracking-widest uppercase">
+          <p className="text-[#7b7676] text-xs sm:text-sm mt-2 tracking-widest uppercase">
             Enter The Arena
           </p>
         </div>
@@ -38,7 +49,7 @@ const Login = () => {
           <h2 className="text-white text-lg sm:text-xl font-bold mb-1">
             Welcome Back
           </h2>
-          <p className="text-[#555] text-xs sm:text-sm mb-5 sm:mb-6">
+          <p className="text-[#7b7676] text-xl mt-3 sm:text-sm mb-5 sm:mb-6">
             Login to continue playing
           </p>
 
