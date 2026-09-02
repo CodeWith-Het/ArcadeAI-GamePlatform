@@ -1,27 +1,16 @@
-import cookieParser from "cookie-parser"
-import express from "express";
+import dotenv from "dotenv"
+dotenv.config()
 
-// routers
-import authRouter from './routers/auth.routes.js';
-import gameRouter from "./routers/game.routes.js";
-import scoreRouter from "./routers/scores.routes.js";
+import express from "express"
+import authRouter from "./routes/auth.router.js"
+import morgen from "morgan"
 
-//Middleware
-import notFound from "./middleware/notfound.middleware.js"
-import errorHandler from "./middleware/errors.middleware.js";
+const app = express()
 
-const app = express();
+app.use(morgen("dev"))
 
 app.use(express.json())
-app.use(cookieParser())
 
-// Routers Aoi
-app.use("/api/auth", authRouter)
-app.use("/api/game", gameRouter)
-app.use("/api/scores",scoreRouter)
+app.use("/api/auth",authRouter)
 
-// use Middlware
-app.use(notFound)
-app.use(errorHandler)
-
-export default app;
+export default app

@@ -1,11 +1,13 @@
-import app from "./src/app.js";
-import connectToDB from "./src/config/database.js";
-import redis from "./src/config/redis.js";
+import dotenv from "dotenv"
+dotenv.config()
 
-connectToDB();
+import app from "./src/app.js"
+import connectToDb from './src/config/database.js';
 
-app.listen(3000, () => {
-  console.log(`\n=========================================`);
-  console.log(`🎮 ArcadeAI Server is LIVE on Port: 3000`);
-  console.log(`=========================================\n`);
-});
+connectToDb()
+
+const PORT = process.env.PORT || 5000
+
+app.listen(PORT, () => {
+    console.log(`server started at port ${PORT}`)
+})
