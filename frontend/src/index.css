@@ -1,45 +1,129 @@
 @import "tailwindcss";
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+@theme {
+  --color-base: #000000;
+  --color-surface: #080a08;
+  --color-surface-low: #0c0f0c;
+  --color-surface-high: #111411;
+  --color-surface-highest: #181d18;
+  --color-text: #f2f5ee;
+  --color-muted: #72786f;
+  --color-outline: #4a5047;
+  --color-outline-variant: #1f241e;
+  --color-lime: #bfff00;
+  --color-lime-soft: #d8ff8a;
+
+  --font-display: "Sora", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
 }
 
 body {
-  font-family:
-    -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
-    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  background-color: var(--color-base);
+  color: var(--color-text);
+  font-family: var(--font-body);
+}
+
+.material-symbols-outlined {
+  font-family: "Material Symbols Outlined";
+  font-weight: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  display: inline-block;
+  white-space: nowrap;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background-color: #0f172a;
-  color: #ffffff;
 }
 
-.gradient-text {
-  background: linear-gradient(135deg, #6b21a8 0%, #ec4899 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.label-caps {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
-.glass-effect {
-  background: rgba(123, 31, 162, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(168, 85, 247, 0.2);
+.telemetry-readout {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 14px;
+  letter-spacing: 0.08em;
 }
 
-.pulse-glow {
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  box-shadow: 0 0 20px rgba(168, 85, 247, 0.5);
+.stat-counter {
+  font-family: var(--font-mono);
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 28px;
+  letter-spacing: -0.02em;
 }
 
-@keyframes pulse {
-  0%,
-  100% {
-    opacity: 1;
+/* Ambient glows — Acid Lime */
+.glow-lime {
+  box-shadow: 0 0 45px -8px rgba(191, 255, 0, 0.35);
+}
+.glow-lime-subtle {
+  box-shadow: 0 0 25px -5px rgba(191, 255, 0, 0.2);
+}
+
+/* Mouse-tracked radial spotlight, driven by --mouse-x / --mouse-y set in JS */
+.spotlight-card {
+  position: relative;
+  background: radial-gradient(
+    800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(191, 255, 0, 0.05),
+    transparent 45%
+  );
+}
+
+@keyframes pulseRing {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.7;
   }
   50% {
-    opacity: 0.8;
+    transform: scale(1.08);
+    opacity: 0.15;
+  }
+  100% {
+    transform: scale(0.95);
+    opacity: 0.7;
+  }
+}
+.animate-pulse-ring {
+  animation: pulseRing 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+.animate-marquee {
+  display: flex;
+  width: 200%;
+  animation: marquee 28s linear infinite;
+}
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* Monospace scanline effect over the ambient backdrop */
+.scanline-overlay {
+  background: linear-gradient(rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.5) 50%),
+    linear-gradient(90deg, rgba(191, 255, 0, 0.01), rgba(0, 0, 0, 0.02), rgba(191, 255, 0, 0.01));
+  background-size: 100% 3px, 6px 100%;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
   }
 }
