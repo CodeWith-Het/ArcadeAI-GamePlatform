@@ -1,5 +1,24 @@
 import axios from "axios"
 
-const api = () => {
-    
+const api = axios.create({
+    baseURL: "http://localhost:3000/api/auth",
+    withCredentials:true
+})
+
+export const registerApi = async ({username,email,password}) => {
+    try {
+        const response = await api.post("/register",{username,email,password})
+        return response.data
+    } catch (error) {
+        throw error.response?.data ? error.response.data : { message: "User can't register" };
+    }
+}
+
+export const loginApi = async ({ username, password }) => {
+    try {
+        const response = await api.post("/login",{username,password})
+        return response.data
+    } catch (error) {
+        throw error.response?.data ? error.response.data : {message:"User can't register"}
+    }    
 }
