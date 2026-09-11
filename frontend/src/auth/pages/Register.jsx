@@ -1,43 +1,34 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AuthLayout from "../components/AuthLayout";
+import useAuth from "../hook/useAuth";
 
 const Register = () => {
+  const navigate = useNavigate();
+  const { register, loading, error, success } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
-
   const [formData, setFormData] = useState({
     username: "",
     email: "",
     password: "",
   });
-
   const [strength, setStrength] = useState(0);
-
   const handleChange = (e) => {
     const { name, value } = e.target;
-
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-
+    setFormData((prev) => ({ ...prev, [name]: value }));
     if (name === "password") {
       calculateStrength(value);
     }
   };
-
   const calculateStrength = (password) => {
     let score = 0;
-
     if (password.length >= 6) score++;
     if (password.length >= 10) score++;
     if (/[A-Z]/.test(password)) score++;
     if (/[0-9]/.test(password)) score++;
     if (/[^A-Za-z0-9]/.test(password)) score++;
-
     setStrength(Math.min(score, 4));
   };
-
   const getStrengthLabel = () => {
     if (!formData.password) return "REQUIRED";
     if (strength === 1) return "WEAK";
@@ -46,36 +37,42 @@ const Register = () => {
     if (strength >= 4) return "STRONG";
     return "REQUIRED";
   };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("REGISTER:", formData);
-    // Backend later: axios.post("/api/auth/register", formData)
+    
+   try {
+    await register(formData)
+    navigate("/login")
+   } catch (error) {
+    console.error(error)
+   }
   };
-
   const handleGoogleAuth = () => {
     console.log("Google Register");
   };
-
   return (
     <AuthLayout>
+      {" "}
       <div className="p-5 sm:p-6">
+        {" "}
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* ================= USERNAME ================= */}
+          {" "}
+          {/* ================= USERNAME ================= */}{" "}
           <div className="space-y-1.5">
+            {" "}
             <label
               htmlFor="username"
               className="text-[10px] text-[#c3caac] uppercase font-mono flex items-center gap-1 font-semibold tracking-wider"
             >
-              <span className="text-[#b8f600]">#</span>
-              Username
-            </label>
-
+              {" "}
+              <span className="text-[#b8f600]">#</span> Username{" "}
+            </label>{" "}
             <div className="min-h-11 flex items-center bg-[#0d0f0c] border border-[#434933]/60 focus-within:border-[#b8f600] focus-within:shadow-[0_0_0_1px_#b8f600] transition-all">
+              {" "}
               <span className="px-3 text-[#8d9479] text-sm font-mono border-r border-[#434933]/30 py-2.5">
-                @
-              </span>
-
+                {" "}
+                @{" "}
+              </span>{" "}
               <input
                 id="username"
                 name="username"
@@ -86,21 +83,21 @@ const Register = () => {
                 autoComplete="username"
                 required
                 className="flex-1 bg-transparent outline-none border-none px-3 py-2.5 text-xs text-[#e2e3de] placeholder:text-[#8d9479]/40 font-mono"
-              />
-            </div>
-          </div>
-
-          {/* ================= EMAIL ================= */}
+              />{" "}
+            </div>{" "}
+          </div>{" "}
+          {/* ================= EMAIL ================= */}{" "}
           <div className="space-y-1.5">
+            {" "}
             <label
               htmlFor="email"
               className="text-[10px] text-[#c3caac] uppercase font-mono flex items-center gap-1 font-semibold tracking-wider"
             >
-              <span className="text-[#b8f600]">#</span>
-              Email Address
-            </label>
-
+              {" "}
+              <span className="text-[#b8f600]">#</span> Email Address{" "}
+            </label>{" "}
             <div className="min-h-11 flex items-center bg-[#0d0f0c] border border-[#434933]/60 focus-within:border-[#b8f600] focus-within:shadow-[0_0_0_1px_#b8f600] transition-all">
+              {" "}
               <input
                 id="email"
                 name="email"
@@ -111,25 +108,25 @@ const Register = () => {
                 autoComplete="email"
                 required
                 className="flex-1 bg-transparent outline-none border-none px-3 py-2.5 text-xs text-[#e2e3de] placeholder:text-[#8d9479]/40 font-mono"
-              />
-
+              />{" "}
               <span className="material-symbols-outlined text-[#8d9479] text-base mr-3">
-                mail
-              </span>
-            </div>
-          </div>
-
-          {/* ================= PASSWORD ================= */}
+                {" "}
+                mail{" "}
+              </span>{" "}
+            </div>{" "}
+          </div>{" "}
+          {/* ================= PASSWORD ================= */}{" "}
           <div className="space-y-1.5">
+            {" "}
             <label
               htmlFor="password"
               className="text-[10px] text-[#c3caac] uppercase font-mono flex items-center gap-1 font-semibold tracking-wider"
             >
-              <span className="text-[#b8f600]">#</span>
-              Password
-            </label>
-
+              {" "}
+              <span className="text-[#b8f600]">#</span> Password{" "}
+            </label>{" "}
             <div className="min-h-11 flex items-center bg-[#0d0f0c] border border-[#434933]/60 focus-within:border-[#b8f600] focus-within:shadow-[0_0_0_1px_#b8f600] transition-all">
+              {" "}
               <input
                 id="password"
                 name="password"
@@ -140,117 +137,139 @@ const Register = () => {
                 autoComplete="new-password"
                 required
                 className="flex-1 min-w-0 bg-transparent outline-none border-none px-3 py-2.5 text-xs text-[#e2e3de] placeholder:text-[#8d9479]/40 font-mono"
-              />
-
+              />{" "}
               <button
                 type="button"
                 onClick={() => setShowPassword((prev) => !prev)}
                 className="px-3 text-[#8d9479] hover:text-[#e2e3de] transition-colors"
               >
+                {" "}
                 <span className="material-symbols-outlined">
-                  {showPassword ? "visibility_off" : "visibility"}
-                </span>
-              </button>
-            </div>
-
-            {/* Password Strength */}
+                  {" "}
+                  {showPassword ? "visibility_off" : "visibility"}{" "}
+                </span>{" "}
+              </button>{" "}
+            </div>{" "}
+            {/* Password Strength */}{" "}
             <div className="pt-1.5 space-y-1">
+              {" "}
               <div className="flex items-center justify-between text-[9px] font-mono uppercase tracking-wider">
-                <span className="text-[#8d9479]">Password Strength:</span>
-                <span className="text-[#b8f600]">{getStrengthLabel()}</span>
-              </div>
-
+                {" "}
+                <span className="text-[#8d9479]">Password Strength:</span>{" "}
+                <span className="text-[#b8f600]">
+                  {" "}
+                  {getStrengthLabel()}{" "}
+                </span>{" "}
+              </div>{" "}
               <div className="grid grid-cols-4 gap-1.5 h-1.5">
+                {" "}
                 {[1, 2, 3, 4].map((bar) => (
                   <div
                     key={bar}
-                    className={`transition-colors ${
-                      bar <= strength
-                        ? "bg-[#b8f600] shadow-[0_0_8px_rgba(184,246,0,0.4)]"
-                        : "bg-[#434933]"
-                    }`}
+                    className={`transition-colors ${bar <= strength ? "bg-[#b8f600] shadow-[0_0_8px_rgba(184,246,0,0.4)]" : "bg-[#434933]"}`}
                   />
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* ================= TERMS ================= */}
+                ))}{" "}
+              </div>{" "}
+            </div>{" "}
+          </div>{" "}
+          {/* ================= TERMS ================= */}{" "}
           <label className="flex items-start gap-2 cursor-pointer select-none">
+            {" "}
             <input
               type="checkbox"
               required
               className="mt-0.5 w-4 h-4 appearance-none bg-[#0d0f0c] border border-[#434933] checked:bg-[#b8f600] checked:border-[#b8f600] relative checked:after:content-['✓'] checked:after:absolute checked:after:text-[#263500] checked:after:text-xs checked:after:left-[2px] checked:after:top-[-2px]"
-            />
+            />{" "}
             <span className="text-[10px] text-[#c3caac] leading-tight font-mono tracking-wider pt-0.5">
-              I agree to the Terms of Service and Privacy Policy.
-            </span>
-          </label>
-
-          {/* ================= SUBMIT ================= */}
+              {" "}
+              I agree to the Terms of Service and Privacy Policy.{" "}
+            </span>{" "}
+          </label>{" "}
+          {/* ================= ERROR ================= */}{" "}
+          {error && (
+            <div className="text-[10px] text-red-400 font-mono uppercase">
+              {" "}
+              {error}{" "}
+            </div>
+          )}{" "}
+          {/* ================= SUCCESS ================= */}{" "}
+          {success && (
+            <div className="text-[10px] text-[#b8f600] font-mono uppercase">
+              {" "}
+              Registration successful!{" "}
+            </div>
+          )}{" "}
+          {/* ================= SUBMIT ================= */}{" "}
           <button
             type="submit"
-            className="w-full py-3 bg-[#b8f600] text-[#263500] font-bold text-sm sm:text-base uppercase tracking-wider flex items-center justify-center gap-2 hover:bg-[#a1d800] hover:shadow-[0_0_20px_rgba(184,246,0,0.4)] active:scale-[0.99] transition-all"
+            disabled={loading}
+            className="w-full py-3 bg-[#b8f600] text-[#263500] font-bold text-sm sm:text-base uppercase tracking-wider flex items-center justify-center gap-2 hover:bg-[#a1d800] hover:shadow-[0_0_20px_rgba(184,246,0,0.4)] active:scale-[0.99] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <span>Sign Up</span>
+            {" "}
+            <span>{loading ? "Creating Account..." : "Sign Up"}</span>{" "}
             <span className="material-symbols-outlined font-bold">
-              person_add
-            </span>
-          </button>
-        </form>
-
-        {/* ================= DIVIDER ================= */}
+              {" "}
+              {loading ? "progress_activity" : "person_add"}{" "}
+            </span>{" "}
+          </button>{" "}
+        </form>{" "}
+        {/* ================= DIVIDER ================= */}{" "}
         <div className="relative flex items-center justify-center my-6">
-          <div className="absolute w-full border-t border-[#434933]/30" />
+          {" "}
+          <div className="absolute w-full border-t border-[#434933]/30" />{" "}
           <span className="relative bg-[#0d0f0c] px-3 text-[9px] text-[#8d9479] uppercase tracking-wider font-mono">
-            Or continue with
-          </span>
-        </div>
-
-        {/* ================= SOCIAL AUTH ================= */}
+            {" "}
+            Or continue with{" "}
+          </span>{" "}
+        </div>{" "}
+        {/* ================= SOCIAL AUTH ================= */}{" "}
         <button
           type="button"
           onClick={handleGoogleAuth}
           className="w-full group flex items-center justify-center gap-2 py-2.5 px-3 bg-[#121412] border border-[#434933]/40 hover:border-[#b8f600] hover:shadow-[0_0_12px_-2px_rgba(184,246,0,0.25)] transition-all"
         >
+          {" "}
           <svg className="w-4 h-4" viewBox="0 0 24 24">
+            {" "}
             <path
               d="M12 5c1.6 0 3 .6 4.1 1.7l3.1-3.1C17.3 1.8 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.4 9 5 12 5z"
               fill="#EA4335"
-            />
+            />{" "}
             <path
               d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.6h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5.1-8.9z"
               fill="#4285F4"
-            />
+            />{" "}
             <path
               d="M5.6 14.8c-.2-.7-.4-1.5-.4-2.3 0-.8.1-1.6.4-2.3L1.9 7.3C.7 9.7 0 12.3 0 15.2c0 2.9.7 5.5 1.9 7.9l3.7-2.9z"
               fill="#FBBC05"
-            />
+            />{" "}
             <path
               d="M12 23.5c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.5-2.4-6.4-5.2L1.9 16.5C3.7 20.2 7.5 23.5 12 23.5z"
               fill="#34A853"
-            />
-          </svg>
+            />{" "}
+          </svg>{" "}
           <span className="text-[10px] text-[#e2e3de] group-hover:text-[#b8f600] uppercase tracking-wider font-mono transition-colors">
-            Google
-          </span>
-        </button>
-
-        {/* ================= LOGIN LINK ================= */}
+            {" "}
+            Google{" "}
+          </span>{" "}
+        </button>{" "}
+        {/* ================= LOGIN LINK ================= */}{" "}
         <div className="mt-6 pt-4 border-t border-[#434933]/20 text-center">
+          {" "}
           <span className="text-[10px] text-[#8d9479] font-mono tracking-wider">
-            ALREADY HAVE AN ACCOUNT?
-          </span>
+            {" "}
+            ALREADY HAVE AN ACCOUNT?{" "}
+          </span>{" "}
           <Link
             to="/login"
             className="ml-2 text-[10px] text-[#b8f600] hover:text-[#e2ff9a] uppercase font-mono font-semibold tracking-wider transition-colors"
           >
-            SIGN IN →
-          </Link>
-        </div>
-      </div>
+            {" "}
+            SIGN IN →{" "}
+          </Link>{" "}
+        </div>{" "}
+      </div>{" "}
     </AuthLayout>
   );
 };
-
 export default Register;

@@ -9,7 +9,9 @@ const MarqueeRow = () => (
   <div className="flex select-none items-center space-x-8 whitespace-nowrap font-display text-4xl font-extrabold uppercase tracking-tight text-outline/20 sm:text-6xl">
     {MARQUEE_ITEMS.map((item) => (
       <span key={item} className="contents">
-        <span className="transition-colors hover:text-lime">{item}</span>
+        <span className="text-lime transition-colors sm:text-lime/30 sm:hover:text-lime">
+          {item}
+        </span>
         <span className="font-light text-lime">—</span>
       </span>
     ))}
