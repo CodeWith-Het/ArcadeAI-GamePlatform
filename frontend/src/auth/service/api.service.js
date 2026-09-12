@@ -19,6 +19,24 @@ export const loginApi = async ({ username, password }) => {
         const response = await api.post("/login",{username,password})
         return response.data
     } catch (error) {
-        throw error.response?.data ? error.response.data : {message:"User can't register"}
+        throw error.response?.data ? error.response.data : {message:"User can't login"}
     }    
+}
+
+export const getMeApi = async () => {
+    try {
+        const response = await api.get("/getme")
+        return response.data
+    } catch (error) {
+        throw error.response?.data ? error.response.data : {message:"User can't Find"}
+    }
+}
+
+export const logoutUserApi = async () => {
+    try {
+        const response = await api.get("/logout")
+        return response.data
+    } catch (error) {
+        throw error.response?.data ? error.response.data : {message:"User can't logout"}
+    }
 }

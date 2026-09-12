@@ -23,10 +23,27 @@ export const registerUser = async (req, res) => {
       password: hashedPassword,
     });
 
+    const token = jwt.sign(
+      { id: newUser._id, username: newUser.username },
+      process.env.JWT_SECRET,
+      { expiresIn: "24h" },
+    );
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 24 * 60 * 60 * 1000,
+    });
+
     res.status(201).json({
       success: true,
       message: "User registered successfully",
-      user: newUser,
+      user: {
+        id: newUser._id,
+        username: newUser.username,
+        email: newUser.email,
+      },
     });
   } catch (error) {
     console.error("error from register user ", error);
@@ -61,10 +78,10 @@ export const loginUser = async (req, res) => {
 
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV = "development",
-      sameSite: process.env.NODE_ENV = "development" ? "none" : "lax",
-      maxAge:24*60*60*1000
- })
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 24 * 60 * 60 * 1000,
+    });
 
     res.status(200).json({
       success:true,
@@ -82,3 +99,57 @@ export const loginUser = async (req, res) => {
     });
   }
 };
+
+export const getme = async (req, res) => {
+  try {
+    const userId = req.user?.id || req.user?._id;
+
+    if (!userId) {
+      return res.status(401).json({
+        success:false,
+        message:"Not Authenicated",
+      });
+    }
+
+    const user = await userModel.findById(userId).select("-password");
+    
+    if (!user) {
+      return res.status(404).json({
+        success:false,
+        message:"User not found",
+      });
+    }
+    
+    res.status(200).json({
+      success:true,
+      message: "user successfully fetch",
+      user,
+    });
+  } catch (error) {
+    console.error("Error from getMe user", error)
+    return res.status(500).json({
+      message: "Internal server error"
+    });
+  }
+} 
+
+export const logoutUser = (req,res) => {
+  try {
+    req.clearCookie("token", {
+      httpOnly: true,
+      secure: true,
+      sameSite:true
+    })
+
+    res.status(200).json({
+      success:true,
+      message:"User logout"
+    })
+  } catch (error) {
+    console.error("Error from User Logout ", error)
+    return res.status(500).json({
+      success:false,
+      message:"Internal server error"
+    })
+  }
+}

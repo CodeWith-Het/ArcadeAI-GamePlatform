@@ -1,16 +1,20 @@
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import Navbar from "./Home/components/Navbar";
-import Hero from "./Home/components/Hero";
-import Pipeline from "./Home/components/Pipeline";
-import Titles from "./Home/components/Titles";
-import Telemetry from "./Home/components/Telemetry";
-import { CTABand, Footer } from "./Home/components/Footer";
-import Login from './auth/pages/Login';
-import Register from './auth/pages/Register';
-
+import Login from "./auth/pages/Login";
+import Register from "./auth/pages/Register";
+import Logout from "./auth/pages/Logout";
+import Home from "./Home/pages/Home";
+import { checkAuth } from "./auth/store/authSlice";
 
 const App = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(checkAuth());
+  }, [dispatch]);
+
   return (
     <BrowserRouter>
       <Routes>
@@ -18,7 +22,6 @@ const App = () => {
           path="/"
           element={
             <div className="relative min-h-screen overflow-x-hidden bg-base font-body text-text selection:bg-lime selection:text-black">
-
               <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
                 <div className="absolute -top-40 left-1/4 h-[600px] w-[600px] rounded-full bg-lime/[0.035] blur-[160px]" />
 
@@ -33,17 +36,7 @@ const App = () => {
 
               {/* Content */}
               <div className="relative z-10">
-                <Navbar />
-
-                <main>
-                  <Hero />
-                  <Pipeline />
-                  <Titles />
-                  <Telemetry />
-                  <CTABand />
-                </main>
-
-                <Footer />
+                <Home />
               </div>
             </div>
           }
@@ -53,6 +46,7 @@ const App = () => {
 
         <Route path="/register" element={<Register />} />
 
+        <Route path="/logout" element={<Logout />} />
       </Routes>
     </BrowserRouter>
   );

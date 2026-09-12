@@ -1,400 +1,153 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { motion } from "framer-motion";
 
-const AuthLayout = ({ children }) => {
+const AuthLayout = ({ children, title, subtitle }) => {
+  const location = useLocation();
+  const isLogin = location.pathname === "/login";
+
+  const heroImage = isLogin
+    ? "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1400&q=80"
+    : "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1400&q=80";
+
   return (
-    <div className="min-h-screen bg-[#0d0f0c] text-[#e2e3de] relative overflow-x-hidden">
-      {/* ================= BACKGROUND ================= */}
-
-      <div className="fixed inset-0 pointer-events-none z-0">
-        {/* Cyber Grid */}
-        <div
-          className="
-            absolute inset-0 opacity-40
-            bg-[linear-gradient(to_right,rgba(67,73,51,0.12)_1px,transparent_1px),linear-gradient(to_bottom,rgba(67,73,51,0.12)_1px,transparent_1px)]
-            bg-[size:32px_32px]
-          "
+    <div className="min-h-screen bg-[#050505] text-[#e2e3de] flex flex-col lg:flex-row overflow-hidden font-sans">
+      {/* ================= LEFT PANEL ================= */}
+      <div className="relative w-full h-[42vh] sm:h-[38vh] lg:h-screen lg:w-[55%] bg-[#0d0f0c] overflow-hidden flex flex-col justify-between p-4 sm:p-6 lg:p-12">
+        {/* Different image for Login / Register */}
+        <motion.img
+          src={heroImage}
+          alt={isLogin ? "Arcade gaming experience" : "Arcade gaming world"}
+          initial={{
+            scale: 1.08,
+            x: isLogin ? -15 : 15,
+          }}
+          animate={{
+            scale: [1.08, 1.15, 1.08],
+            x: isLogin ? [-15, 10, -15] : [15, -10, 15],
+            y: [0, -8, 0],
+          }}
+          transition={{
+            duration: 16,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+          className="absolute inset-0 h-full w-full object-cover opacity-70"
         />
 
-        {/* Ambient Glow */}
-        <div
-          className="
-            absolute inset-0
-            bg-[radial-gradient(circle_at_50%_45%,rgba(184,246,0,0.07),transparent_60%)]
-          "
+        {/* Dark gradient */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/60 to-[#050505]/20" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#050505]/40 via-transparent to-transparent" />
+
+        {/* Grid pattern */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(184,246,0,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(184,246,0,0.03)_1px,transparent_1px)] bg-[size:24px_24px] sm:bg-[size:32px_32px]" />
+
+        {/* Glowing orb */}
+        <motion.div
+          animate={{ y: [0, -15, 0] }}
+          transition={{
+            duration: 6,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+          className="absolute -top-10 -left-10 w-[200px] h-[200px] sm:w-[400px] sm:h-[400px] rounded-full bg-gradient-to-br from-[#b8f600]/20 to-transparent blur-[50px] sm:blur-[80px]"
         />
 
-        {/* Scan Laser */}
-        <div
-          className="
-            absolute left-0 right-0 top-0 h-px
-            bg-gradient-to-r
-            from-transparent
-            via-[#b8f600]/70
-            to-transparent
-            shadow-[0_0_12px_1px_rgba(184,246,0,0.5)]
-            animate-[scan_6s_ease-in-out_infinite]
-          "
+        <motion.div
+          animate={{ y: [0, 20, 0] }}
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 1,
+          }}
+          className="absolute top-1/4 right-4 sm:right-10 w-[110px] h-[110px] sm:w-[200px] sm:h-[200px] rounded-full bg-gradient-to-bl from-[#b8f600]/25 to-transparent blur-[40px] sm:blur-[60px]"
         />
+
+        {/* Logo */}
+        <div className="relative z-10 flex items-center justify-between">
+          <Link to="/" className="flex items-center gap-2 group">
+            <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-lg bg-[#121412] border border-[#b8f600]/30 transition-colors group-hover:border-[#b8f600]">
+              <span className="font-display text-sm sm:text-base font-bold text-[#b8f600]">
+                A
+              </span>
+            </div>
+
+            <span className="font-display text-base sm:text-lg font-bold tracking-wider text-white">
+              Arcade<span className="text-[#b8f600]">.AI</span>
+            </span>
+          </Link>
+        </div>
+
+        {/* Bottom Hero Text */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="relative z-10"
+        >
+          <div className="mb-2 sm:mb-3 inline-flex items-center gap-1.5 sm:gap-2 rounded-full border border-[#b8f600]/30 bg-[#050505]/70 px-2.5 sm:px-3 py-0.5 sm:py-1 backdrop-blur-md">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#b8f600] animate-pulse" />
+
+            <span className="text-[9px] sm:text-[10px] font-mono uppercase tracking-[0.15em] text-[#b8f600]">
+              Neural Link Active
+            </span>
+          </div>
+
+          {/* Different sentence */}
+          <h1 className="font-display text-xl sm:text-2xl lg:text-5xl font-bold leading-tight text-white mb-1 sm:mb-2">
+            {isLogin ? (
+              <>
+                RETURN TO <br className="hidden sm:block" /> THE ARCADE
+              </>
+            ) : (
+              <>
+                CREATE YOUR <br className="hidden sm:block" /> LEGACY
+              </>
+            )}
+          </h1>
+
+          <p className="text-[#8d9479] text-[10px] sm:text-xs font-mono uppercase tracking-[0.2em]">
+            Arcade.AI Engine
+          </p>
+        </motion.div>
       </div>
 
-      {/* ================= HEADER ================= */}
-
-      <header
-        className="
-          relative z-20
-          w-full
-          border-b border-[#434933]/30
-          bg-[#0d0f0c]/80
-          backdrop-blur-md
-        "
+      {/* ================= RIGHT PANEL ================= */}
+      <motion.div
+        initial={{ opacity: 0, x: 100 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{
+          type: "spring",
+          damping: 25,
+          stiffness: 200,
+        }}
+        className="relative w-full flex-1 lg:w-[45%] bg-[#050505] rounded-t-[1.5rem] sm:rounded-t-[2rem] lg:rounded-none -mt-6 sm:-mt-8 lg:mt-0 z-20 flex flex-col px-5 sm:px-6 py-8 sm:py-10 lg:p-16 overflow-y-auto"
       >
-        <div
-          className="
-            max-w-7xl mx-auto
-            px-4 sm:px-6 lg:px-8
-            h-16
-            flex items-center justify-between
-          "
-        >
-          {/* Brand */}
-
-          <div className="flex items-center gap-4">
-            <Link to="/" className="flex items-center gap-2 group">
-              <div
-                className="
-                  w-8 h-8
-                  bg-[#121412]
-                  border border-[#434933]/50
-                  flex items-center justify-center
-                  group-hover:border-[#b8f600]
-                  transition-colors
-                "
-              >
-                <span className="material-symbols-outlined text-[#b8f600]">
-                  terminal
-                </span>
-              </div>
-
-              <div className="flex flex-col">
-                <span
-                  className="
-                    text-lg
-                    font-bold
-                    tracking-wider
-                    uppercase
-                    leading-none
-                    text-[#b8f600]
-                  "
-                >
-                  Arcade.AI
-                </span>
-
-                <span
-                  className="
-                    text-[9px]
-                    tracking-[0.2em]
-                    uppercase
-                    text-[#8d9479]
-                    font-mono
-                  "
-                >
-                  KERNEL v2.5-PROD
-                </span>
-              </div>
-            </Link>
-          </div>
-
-          {/* Right */}
-
-          <div className="flex items-center gap-4">
-            <div className="hidden sm:flex flex-col items-end">
- 
-            </div>
+        <div className="w-full max-w-sm mx-auto my-auto">
+          {/* Mobile signup/login switch */}
+          <div className="flex lg:hidden justify-end mb-6 sm:mb-8 text-[10px] text-[#8d9479] font-mono tracking-wide">
+            {isLogin ? "NEW? " : "MEMBER? "}
 
             <Link
-              to="/"
-              className="
-                flex items-center gap-1.5
-                px-3 py-2
-                border border-[#434933]/40
-                bg-[#121412]
-                text-[#e2e3de]
-                hover:text-[#b8f600]
-                hover:border-[#b8f600]
-                transition-all
-                text-[10px]
-                uppercase
-                font-mono
-              "
+              to={isLogin ? "/register" : "/login"}
+              className="text-white font-bold ml-1 hover:text-[#b8f600]"
             >
-              <span className="material-symbols-outlined text-sm">
-                arrow_back
-              </span>
-
-              <span className="hidden sm:inline">RETURN TO PORTAL</span>
+              {isLogin ? "SIGN UP" : "SIGN IN"}
             </Link>
           </div>
+
+          {/* Form Heading */}
+          <div className="mb-8 sm:mb-10">
+            <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-2">
+              {title}
+            </h2>
+
+            <p className="text-[#8d9479] text-sm font-medium">{subtitle}</p>
+          </div>
+
+          {children}
         </div>
-      </header>
-
-      {/* ================= MAIN ================= */}
-
-      <main
-        className="
-          relative z-10
-          min-h-[calc(100vh-64px)]
-          flex flex-col
-          items-center justify-center
-          px-4 py-8
-          sm:px-6 sm:py-12
-        "
-      >
-        {/* Terminal Wrapper */}
-
-        <div className="w-full max-w-xl">
-          {/* Metadata */}
-
-          <div
-            className="
-              flex items-center justify-between
-              px-2 pb-1
-              text-[9px]
-              text-[#8d9479]
-              uppercase
-              font-mono
-            "
-          >
-          </div>
-
-          {/* ================= TERMINAL ================= */}
-
-          <div
-            className="
-              relative
-              bg-[#0d0f0c]/90
-              border border-[#434933]/50
-              backdrop-blur-xl
-              shadow-[0_0_30px_-5px_rgba(0,0,0,0.8)]
-              before:absolute
-              before:-top-px
-              before:-left-px
-              before:w-2
-              before:h-2
-              before:border-t-2
-              before:border-l-2
-              before:border-[#b8f600]
-              after:absolute
-              after:-bottom-px
-              after:-right-px
-              after:w-2
-              after:h-2
-              after:border-b-2
-              after:border-r-2
-              after:border-[#b8f600]
-            "
-          >
-            {/* Top light */}
-
-            <div
-              className="
-                h-px w-full
-                bg-gradient-to-r
-                from-transparent
-                via-[#b8f600]/40
-                to-transparent
-              "
-            />
-
-            {/* Terminal Header */}
-
-            <div
-              className="
-                p-5 sm:p-6
-                border-b border-[#434933]/30
-                bg-[#121412]/40
-                flex flex-col gap-1.5
-              "
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="material-symbols-outlined text-[#b8f600]">
-                    fingerprint
-                  </span>
-
-                  <h1
-                    className="
-                      text-lg sm:text-xl
-                      font-semibold
-                      uppercase
-                      tracking-tight
-                      text-[#e2e3de]
-                    "
-                  >
-                    OPERATOR IDENTITY ACCESS
-                  </h1>
-                </div>
-
-                <span
-                  className="
-                    hidden sm:block
-                    px-2 py-1
-                    bg-[#282a28]
-                    border border-[#434933]/40
-                    text-[9px]
-                    text-[#b8f600]
-                    uppercase
-                    font-mono
-                  "
-                >
-                  PROT 802.11AE
-                </span>
-              </div>
-
-              <p
-                className="
-                  text-xs sm:text-sm
-                  text-[#c3caac]
-                  leading-5
-                "
-              >
-                Initialize spatial tracking context and synchronize local
-                neural-biometric coefficients.
-              </p>
-            </div>
-
-            {/* PAGE CONTENT */}
-
-            {children}
-
-            {/* ================= SECURITY ================= */}
-
-            <div
-              className="
-                px-5 sm:px-6
-                py-3
-                border-t border-[#434933]/30
-                bg-[#121412]/60
-                flex flex-col sm:flex-row
-                items-center justify-between
-                gap-2
-                text-[9px]
-                text-[#8d9479]
-                uppercase
-                font-mono
-              "
-            >
-              <div className="flex items-center gap-1.5">
-                <span className="material-symbols-outlined text-[#b8f600] text-sm">
-                  shield
-                </span>
-
-                <span>AES-256 WEBGPU ENCLAVE ISOLATION</span>
-              </div>
-
-              <div className="flex items-center gap-1.5 text-[#c3caac]">
-                <span
-                  className="
-                    w-1.5 h-1.5
-                    bg-[#b8f600]
-                    rounded-full
-                  "
-                />
-
-                <span>AIR-GAP: NO RAW BIOMETRIC VIDEO LOGGED</span>
-              </div>
-            </div>
-          </div>
-
-          {/* ================= TELEMETRY ================= */}
-
-          <div
-            className="
-              mt-3
-              flex items-center justify-between
-              px-2
-              text-[9px]
-              text-[#8d9479]
-              uppercase
-              font-mono
-            "
-          >
-          </div>
-        </div>
-      </main>
-
-      {/* ================= FOOTER ================= */}
-
-      <footer
-        className="
-          w-full
-          bg-[#0d0f0c]
-          border-t border-[#434933]/20
-          relative z-20
-        "
-      >
-        <div
-          className="
-            max-w-7xl mx-auto
-            px-4 sm:px-6 lg:px-8
-            py-6
-            flex flex-col md:flex-row
-            justify-between
-            items-center
-            gap-4
-          "
-        >
-          <div
-            className="
-              text-[9px]
-              text-[#c3caac]
-              tracking-wider
-              uppercase
-              font-mono
-              text-center md:text-left
-            "
-          >
-            SYSTEMS OPERATIONAL // ARCADE.AI PROTOCOL 2025 // ALL RIGHTS
-            RESERVED
-          </div>
-
-          <div
-            className="
-              flex flex-wrap
-              justify-center
-              items-center
-              gap-5
-            "
-          >
-            <a
-              href="#"
-              className="text-[9px] text-[#c3caac] hover:text-[#b8f600] uppercase font-mono transition-colors"
-            >
-              Privacy Protocol
-            </a>
-
-            <a
-              href="#"
-              className="text-[9px] text-[#c3caac] hover:text-[#b8f600] uppercase font-mono transition-colors"
-            >
-              Security Kernel
-            </a>
-
-            <a
-              href="#"
-              className="text-[9px] text-[#c3caac] hover:text-[#b8f600] uppercase font-mono transition-colors"
-            >
-              Terminal API
-            </a>
-
-            <a
-              href="#"
-              className="text-[9px] text-[#c3caac] hover:text-[#b8f600] uppercase font-mono transition-colors"
-            >
-              <span className="text-[#b8f600]">●</span> Node Status
-            </a>
-          </div>
-        </div>
-      </footer>
+      </motion.div>
     </div>
   );
 };
